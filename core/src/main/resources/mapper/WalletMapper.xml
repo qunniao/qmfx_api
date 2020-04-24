@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.WalletMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.entity.Wallet" id="walletMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="incomeBalance" column="income_balance"/>
+        <result property="commissionBalance" column="commission_balance"/>
+        <result property="withdrawalBalance" column="withdrawal_balance"/>
+        <result property="password" column="password"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    id,user_id,income_balance,commission_balance,withdrawal_balance,password,
+    gmt_create,gmt_modified   </sql>
+
+    <select id="queryInfo" resultType="com.zhancheng.core.vo.WalletVO">
+        SELECT * FROM zc_wallet WHERE user_id = #{userId}
+    </select>
+
+
+</mapper>

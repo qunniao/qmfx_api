@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.AgentLevelProductAwardMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.vo.AgentLevelProductAwardListVO" id="agentLevelProductAwardMap">
+        <result property="pid" column="pid"/>
+        <result property="title" column="title"/>
+        <result property="cover" column="cover"/>
+        <result property="price" column="price"/>
+
+        <association property="agentLevelProductAwardVO" javaType="com.zhancheng.core.vo.AgentLevelProductAwardVO">
+            <result property="id" column="id"/>
+            <result property="agentLevelId" column="agent_level_id"/>
+            <result property="productId" column="product_id"/>
+            <result property="awardMoney" column="award_money"/>
+            <result property="awardPercent" column="award_percent"/>
+            <result property="type" column="type"/>
+            <result property="state" column="state"/>
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    id,agent_level_id,product_id,award_money,award_percent,type,state
+    </sql>
+
+    <select id="queryInfo" resultType="com.zhancheng.core.entity.AgentLevelProductAward">
+        SELECT
+        *
+        FROM
+        zc_agent_level_product_award
+        WHERE
+        agent_level_id = #{agentLevelId}
+        AND
+        product_id = #{productId}
+    </select>
+
+    <select id="queryPage" resultType="com.zhancheng.core.vo.AgentLevelProductAwardListVO">
+        SELECT
+        p.pid,p.title,p.cover,p.price,
+        (select a.award_money from zc_agent_level_product_award a where a.agent_level_id = #{query.agentLevelId} AND a.product_id = p.pid) as awardMoney,
+        (select a.agent_price from zc_agent_level_product_award a where a.agent_level_id = #{query.agentLevelId} AND a.product_id = p.pid) as agentPrice
+
+        FROM
+        zc_product p
+        WHERE
+        p.is_deleted = 0
+        ORDER BY p.pid DESC
+    </select>
+</mapper>

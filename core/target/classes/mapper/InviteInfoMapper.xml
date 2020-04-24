@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.InviteInfoMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.entity.InviteInfo" id="inviteInfoMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="inviterId" column="inviter_id"/>
+        <result property="level" column="level"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="gmtCreate" column="gmt_create"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    id,user_id,inviter_id,level,order_no,gmt_create   </sql>
+
+
+</mapper>

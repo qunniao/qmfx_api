@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.AwardMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.vo.AwardVO" id="awardMap">
+
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="shareId" column="share_id"/>
+        <result property="orderProductId" column="order_product_id"/>
+        <result property="awardMoney" column="award_money"/>
+        <result property="awardState" column="award_state"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="shareName" column="shareName"/>
+
+        <association property="orderProductVO" javaType="com.zhancheng.core.vo.OrderProductVO">
+            <result property="orderId" column="order_id"/>
+            <result property="pid" column="product_id"/>
+            <result property="productNum" column="product_num"/>
+            <result property="productPrice" column="product_price"/>
+        </association>
+
+        <association property="productListVO" javaType="com.zhancheng.core.vo.ProductListVO">
+            <result property="title" column="title"/>
+            <result property="cover" column="cover"/>
+        </association>
+
+        <association property="userListVO" javaType="com.zhancheng.core.vo.UserListVO">
+            <result property="nickname" column="nickname"/>
+            <result property="cover" column="cover"/>
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    id,user_id,share_id,order_product_id,award_money,award_state,gmt_create    </sql>
+
+    <!-- 根据userId和orderProductId查询奖励是否已存在 -->
+    <select id="queryInfo" resultType="com.zhancheng.core.entity.Award">
+        SELECT
+        *
+        FROM
+        zc_award
+        WHERE
+        user_id = #{userId}
+        AND
+        share_id = #{shareId}
+        AND
+        order_product_id = #{orderProductId}
+    </select>
+
+    <select id="queryInfoByOpid" resultType="com.zhancheng.core.entity.Award">
+        SELECT
+        *
+        FROM
+        zc_award
+        WHERE
+        user_id = #{userId}
+        AND
+        share_id = #{shareId}
+        AND
+        order_product_id = #{orderProductId}
+    </select>
+
+    <select id="queryListByUserId" resultMap="awardMap">
+        SELECT
+        a.*,
+        op.product_id,
+        op.product_num,
+        op.product_price,
+        op.share_id,
+        p.cover,
+        p.title,
+        u.nickname,u.cover
+        FROM
+        zc_award a,zc_order_product op,zc_product p,zc_user u
+        WHERE
+        a.share_id = #{shareId}
+        AND
+        op.id = a.order_product_id
+        AND
+        p.pid = op.product_id
+        AND
+        u.id = a.user_id
+        ORDER BY a.id DESC
+    </select>
+
+    <select id="queryPage" resultMap="awardMap">
+        SELECT
+        a.*,(select zu.nickname from zc_user zu where zu.id = a.share_id) as shareName,
+        op.product_id,
+        op.product_num,
+        op.product_price,
+        op.share_id,
+        p.cover,
+        p.title,
+        u.nickname,u.cover
+        FROM
+        zc_award a,zc_order_product op,zc_product p,zc_user u
+        WHERE
+        <if test="query.shareId != null">
+            a.share_id = #{query.shareId} AND
+        </if>
+        op.id = a.order_product_id
+        AND
+        p.pid = op.product_id
+        AND
+        u.id = a.user_id
+        ORDER BY a.id DESC
+    </select>
+</mapper>

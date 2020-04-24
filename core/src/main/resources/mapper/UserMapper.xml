@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.UserMapper">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.entity.User" id="userMap">
+        <result property="id" column="id"/>
+        <result property="openid" column="openid"/>
+        <result property="nickname" column="nickname"/>
+        <result property="cover" column="cover"/>
+        <result property="phone" column="phone"/>
+        <result property="trueName" column="true_name"/>
+        <result property="gender" column="gender"/>
+        <result property="birth" column="birth"/>
+        <result property="region" column="region"/>
+        <result property="email" column="email"/>
+        <result property="inviterId" column="inviter_id"/>
+        <result property="inviters" column="inviters"/>
+        <result property="sale" column="sale"/>
+        <result property="remark" column="remark"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="gmtLogin" column="gmt_login"/>
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id,
+            openid,
+            nickname,
+            cover,
+            phone,
+            true_name,
+            gender,
+            birth,
+            region,
+            email,
+            inviter_id,
+            inviters,
+            sale,
+            remark,
+            is_deleted,
+            gmt_create,
+            gmt_modified,
+            gmt_login   </sql>
+
+    <select id="queryPage" resultType="com.zhancheng.core.vo.UserListVO">
+        SELECT zu.id,
+               zu.gmt_create,
+               zu.nickname,
+               zu.cover,
+               zu.gmt_login,
+               le.level,
+               COUNT(zo.user_id) orderNum,
+               (select zw.balance from zc_wallet zw where zw.user_id = zu.id) as balance,
+               (select u.nickname from zc_user u where u.id = zu.inviter_id) as inviterName
+        FROM zc_user zu
+                 LEFT JOIN zc_order zo
+                 ON zu.id = zo.user_id,zc_agent_level le
+        WHERE
+        zu.is_deleted = 0
+        AND
+        le.id = zu.agent_level
+        GROUP BY zu.id
+        ORDER BY zu.gmt_create DESC
+    </select>
+
+    <select id="queryInfo" resultType="com.zhancheng.core.vo.UserVO">
+        SELECT zu.id,
+               zu.agent_level,
+               zu.inviter_id,
+               zu.nickname,
+               zu.cover,
+               zu.phone,
+               zu.true_name,
+               zu.gender,
+               zu.birth,
+               zu.region,
+               zu.remark
+        FROM zc_user AS zu
+        WHERE
+        zu.id = #{id}
+        AND
+        zu.is_deleted = 0
+    </select>
+
+    <select id="queryInfoById" resultType="com.zhancheng.core.vo.UserVO">
+        SELECT zu.id,
+               zu.agent_level,
+               zu.inviter_id,
+               zu.nickname,
+               zu.cover,
+               zu.phone,
+               zu.true_name,
+               zu.gender,
+               zu.birth,
+               zu.region,
+               zu.remark
+        FROM zc_user AS zu
+        WHERE zu.id = #{id}
+    </select>
+
+    <select id="queryLower" resultType="com.zhancheng.core.vo.RewardVO">
+        SELECT
+            zu.id user_id,
+            zu.nickname,
+            zu.gmt_create,
+            IFNULL (SUM( zo.total_price ) ,0) lower_total_sales        FROM
+            zc_user zu
+                LEFT JOIN zc_order zo ON zo.user_id = zu.id
+        WHERE
+            zu.inviter_id = #{inviterId}
+        GROUP BY zu.id
+    </select>
+
+    <select id="queryLowerRecentlySales" resultType="java.lang.Integer">
+        SELECT
+        SUM( zo.total_price) lower_recently_sales
+        FROM
+        zc_order zo
+        WHERE
+        DATE_SUB( CURDATE( ), INTERVAL 30 DAY ) &lt; date( zo.gmt_modified)
+        AND zo.user_id = #{userId}
+    </select>
+
+    <select id="queryListByAgentInfo" resultType="com.zhancheng.core.vo.UserAgentListVO">
+        SELECT u.*,
+               w.balance,
+               le.level,
+               (select nickname from zc_user  where id = u.inviter_id) as inviterName,
+               (select count(zu.id) from zc_user zu where zu.inviter_id = u.id) as inviterCount,
+               (select sum(a.award_money) from zc_award a where a.share_id = u.id) as awardMoney
+        FROM zc_user u,zc_wallet w,zc_agent_level le
+        WHERE
+        w.user_id = u.id
+        AND
+        le.id = u.agent_level
+        AND
+        u.is_deleted = 0
+        ORDER BY u.gmt_create DESC
+    </select>
+
+</mapper>

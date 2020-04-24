@@ -1,0 +1,41 @@
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  type-aliases-package: com.zhancheng.core.entity,com.zhancheng.core.dto
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+spring:
+  # 数据库连接池
+  datasource:
+    url: jdbc:mysql://47.110.34.1:3306/weshop?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true
+    username: root
+    password: zc24615.
+    druid:
+      initial-size: 1
+      min-idle: 1
+      max-active: 20
+      test-on-borrow: true
+      stat-view-servlet:
+        allow: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+# redis配置,注意密码必须用引号
+  redis:
+    database: 1
+    host: 47.96.31.157
+    password: '19112001009.'
+    port: 6379
+#微信相关
+weChat:
+  appId: wxcb0646a754eb05bc
+  secret: 934632a0fff99372406fde67eca26ddc
+  domain: http://back.zhanchengwlkj.com/
+  mchId: 1566391091
+  key: ldfsDwwZfsas0asIKJGH1yuu7klIi1hs
+  notifyUrl: distribution_applet/pay/wxPayUnifiedNotify
+  tradeType: JSAPI
+  grantType: authorization_code
+#统一奖励相关,type=1按金额奖励，2按比例奖励
+award:
+  money: 0
+  percent: 1
+  type: 2

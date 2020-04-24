@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.TransferMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.entity.Transfer" id="transferMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="type" column="type"/>
+        <result property="tradeType" column="trade_type"/>
+        <result property="amount" column="amount"/>
+        <result property="balance" column="balance"/>
+        <result property="remark" column="remark"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+
+    id,user_id,order_id,type,trade_type,amount,balance,remark,gmt_create,gmt_modified    </sql>
+
+    <select id="queryCommission" resultType="com.zhancheng.core.vo.CommissionListVO">
+        SELECT
+            zt.id,
+            zt.order_id,
+            zt.trade_type,
+            zt.amount,
+            zt.balance,
+            zt.gmt_create,
+            zu.nickname
+        FROM
+            zc_transfer zt
+                LEFT JOIN zc_user zu ON zt.user_id = zu.id
+        WHERE
+            zt.user_id = #{userId}
+    </select>
+
+</mapper>

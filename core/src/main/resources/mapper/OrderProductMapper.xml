@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.OrderProductMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.entity.OrderProduct" id="orderProductMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="shareId" column="share_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="productNum" column="product_num"/>
+        <result property="productPrice" column="product_price"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    id,user_id,share_id,order_id,product_id,product_num,product_price,gmt_create,gmt_modified   </sql>
+
+    <select id="queryList" resultType="com.zhancheng.core.vo.OrderProductVO">
+        SELECT
+            zop.id,
+            zop.share_id,
+            zop.product_id pid,
+            zop.product_num,
+            zop.product_price,
+            zp.title,
+            zp.cover,
+            zp.product_number
+        FROM
+            zc_order_product zop
+                LEFT JOIN zc_product zp
+                ON zp.pid=zop.product_id
+        WHERE zop.order_id = #{orderId}
+    </select>
+
+    <select id="queryInfo" resultType="com.zhancheng.core.vo.OrderProductVO">
+        SELECT
+            zop.id,
+            zop.share_id,
+            zop.product_id pid,
+            zop.product_num,
+            zop.product_price,
+            zp.title,
+            zp.cover,
+            zp.product_number
+        FROM
+            zc_order_product zop
+                LEFT JOIN zc_product zp
+                ON zp.pid=zop.product_id
+        WHERE zop.id = #{id}
+    </select>
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.AgentLevelMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.entity.AgentLevel" id="agentLevelMap">
+        <result property="id" column="id"/>
+        <result property="level" column="level"/>
+        <result property="nick" column="nick"/>
+        <result property="stockDiscount" column="stockDiscount"/>
+        <result property="awardPercent" column="awardPercent"/>
+        <result property="minStock" column="minStock"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="levelInt" column="level_int"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    id,level,nick,stockDiscount,awardPercent,minStock,gmt_create,level_int
+    </sql>
+
+    <select id="queryPage" resultType="com.zhancheng.core.entity.AgentLevel">
+        SELECT
+        *
+        FROM
+        zc_agent_level
+        ORDER BY id
+    </select>
+
+    <select id="queryInfo" resultType="com.zhancheng.core.entity.AgentLevel">
+        SELECT
+        *
+        FROM
+        zc_agent_level
+        WHERE
+        id = #{id}
+    </select>
+</mapper>

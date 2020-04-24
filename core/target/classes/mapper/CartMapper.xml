@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.CartMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.entity.Cart" id="cartMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="productPrice" column="product_price"/>
+        <result property="productNum" column="product_num"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    id,user_id,product_id,product_name,product_price,product_num,gmt_create,gmt_modified  </sql>
+
+    <select id="queryPage" resultType="com.zhancheng.core.vo.CartListVO">
+        SELECT
+            zc.id,
+            zc.product_id,
+            zc.product_name,
+            zc.product_price,
+            zc.product_num,
+            zp.cover
+        FROM
+            zc_cart AS zc
+                LEFT JOIN zc_product zp
+                ON zp.pid = zc.product_id
+        WHERE zc.user_id = #{userId}
+        ORDER BY zc.gmt_modified DESC
+    </select>
+
+    <select id="queryInfo" resultType="com.zhancheng.core.vo.CartListVO">
+        SELECT
+        zc.id,
+        zc.user_id,
+        zc.product_id,
+        zc.product_num,
+        zc.product_name,
+        zc.product_price,
+        zp.retail_freight_id,
+        zp.cover
+        FROM
+        zc_cart zc
+        LEFT JOIN zc_product zp ON zc.product_id = zp.pid
+        WHERE
+        zc.id IN
+        <foreach collection="cIds" item="cid" index="index" open="(" close=")" separator=",">
+            #{cid}
+        </foreach>
+        ORDER BY
+        zc.gmt_create DESC
+    </select>
+
+
+</mapper>

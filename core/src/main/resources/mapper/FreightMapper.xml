@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.FreightMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.entity.Freight" id="freightMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="valuationWay" column="valuation_way"/>
+        <result property="defaultStock" column="default_stock"/>
+        <result property="defaultBuyins" column="default_buyins"/>
+        <result property="defaultTake" column="default_take"/>
+        <result property="defaultRetail" column="default_retail"/>
+        <result property="transportWay" column="transport_way"/>
+        <result property="status" column="status"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <collection property="freightRegionList" column="id"
+                    select="com.zhancheng.core.dao.FreightRegionMapper.queryList"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    id,title,valuation_way,default_stock,default_buyins,default_take,default_retail,transport_way,status,gmt_create,gmt_modified   </sql>
+
+    <select id="queryPage" resultType="com.zhancheng.core.vo.FreightListVo">
+        SELECT
+            zf.id,
+            zf.title,
+            zf.valuation_way,
+            zf.default_stock,
+            zf.default_buyins,
+            zf.default_take,
+            zf.default_retail,
+            zf.transport_way,
+            zf.gmt_modified
+        FROM
+            zc_freight AS zf
+            WHERE zf.is_deleted = 0
+        ORDER BY zf.gmt_create
+    </select>
+    <select id="queryInfo" resultMap="freightMap">
+        SELECT * FROM zc_freight AS zf
+        WHERE zf.is_deleted = 0 AND zf.id = #{id}
+    </select>
+
+</mapper>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.OrderMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.entity.Order" id="orderMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="orderNumber" column="order_number"/>
+        <result property="contactName" column="contact_name"/>
+        <result property="contactPhone" column="contact_phone"/>
+        <result property="contactAddress" column="contact_address"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="freight" column="freight"/>
+        <result property="discount" column="discount"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="payNumber" column="pay_number"/>
+        <result property="payMoney" column="pay_money"/>
+        <result property="payWay" column="pay_way"/>
+        <result property="remark" column="remark"/>
+        <result property="deliveryWay" column="delivery_way"/>
+        <result property="expressCompany" column="express_company"/>
+        <result property="expressNumber" column="express_number"/>
+        <result property="sendTime" column="send_time"/>
+        <result property="receivingTime" column="receiving_time"/>
+        <result property="orderState" column="order_state"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    id,user_id,order_number,contact_name,contact_phone,contact_address,pay_time,freight,discount,total_price,
+    pay_number,pay_money,pay_way,remark,delivery_way,express_company,
+    express_number,send_time,receiving_time,order_state,is_deleted,gmt_create,gmt_modified   </sql>
+
+    <select id="queryPage" resultType="com.zhancheng.core.vo.OrderListVO">
+    SELECT
+    zo.*,
+    zu.nickname
+    FROM
+    zc_order zo
+    LEFT JOIN zc_user zu
+    ON zo.user_id = zu.id
+    LEFT JOIN zc_order_product zop
+    ON zop.order_id = zo.id
+    <where>
+        zo.is_deleted = 0
+        <if test="query.orderNumber != null and query.orderNumber != ''">
+            AND zo.order_number LIKE CONCAT('%', #{query.orderNumber},'%')
+        </if>
+        <if test="query.orderState != null">
+            AND zo.order_state = #{query.orderState}
+        </if>
+        <if test="query.userId != null">
+            AND zo.user_id = #{query.userId}
+        </if>
+    </where>
+    GROUP BY zo.id
+    ORDER BY zo.gmt_create DESC
+</select>
+
+    <select id="queryInfo" resultType="com.zhancheng.core.vo.OrderVO">
+        SELECT
+            zo.*
+        FROM
+            zc_order zo
+                LEFT JOIN zc_user zu
+                ON zo.user_id = zu.id
+        WHERE zo.id = #{id} AND zo.is_deleted = 0
+        GROUP BY zo.id
+    </select>
+
+    <select id="selectOneByOrderNumber" resultType="com.zhancheng.core.vo.OrderVO">
+        SELECT
+            zo.id,
+            zo.contact_name,
+            zo.contact_phone,
+            zo.user_id,
+            zo.order_number,
+            zo.gmt_create,
+            zo.delivery_way,
+            zo.contact_address,
+            zo.total_price,
+            zo.pay_time,
+            zo.pay_way,
+            zo.freight,
+            zo.order_state,
+            zo.pay_money
+        FROM
+            zc_order zo
+        WHERE zo.order_number = #{orderNumber} AND zo.is_deleted = 0
+    </select>
+
+    <select id="queryFinishedOrderMoneyByUserId" resultType="java.lang.Double">
+        SELECT
+            sum(zo.pay_money)
+        FROM
+            zc_order zo
+        WHERE zo.user_id = #{userId}
+        AND zo.is_deleted = 0
+        AND zo.order_state = 4
+    </select>
+</mapper>

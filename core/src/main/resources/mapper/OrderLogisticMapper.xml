@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.OrderLogisticMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.entity.OrderLogistic" id="orderLogisticMap">
+        <result property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="orderProductId" column="order_product_id"/>
+        <result property="deliveryWay" column="delivery_way"/>
+        <result property="expressCompany" column="express_company"/>
+        <result property="expressNumber" column="express_number"/>
+        <result property="logisticCode" column="logistic_code"/>
+        <result property="logisticState" column="logistic_state"/>
+        <result property="logisticTrace" column="logistic_trace"/>
+        <result property="sendType" column="send_type"/>
+        <result property="contactName" column="contact_name"/>
+        <result property="contactPhone" column="contact_phone"/>
+        <result property="contactAddress" column="contact_address"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    id,order_id,order_product_id,delivery_way,express_company,express_number,logistic_code,logistic_state,logistic_trace,send_type,contact_name,contact_phone,contact_address,gmt_create,gmt_modified   </sql>
+
+    <select id="queryList" resultType="com.zhancheng.core.vo.OrderLogisticVO">
+        SELECT
+            t.*
+        FROM
+            zc_order_logistic t
+        WHERE t.order_id = #{orderId}
+        AND
+        t.is_deleted = 0
+    </select>
+
+    <select id="queryList2" resultType="com.zhancheng.core.vo.OrderLogisticVO">
+        SELECT
+            t.id,t.order_id,t.order_product_id
+        FROM
+            zc_order_logistic t
+        WHERE t.order_id = #{orderId}
+        AND
+        t.is_deleted = 0
+        ORDER BY t.id DESC
+    </select>
+
+    <select id="queryInfo" resultType="com.zhancheng.core.vo.OrderLogisticVO">
+        SELECT
+            t.*
+        FROM
+            zc_order_logistic t
+        WHERE t.id = #{id}
+        AND
+        t.is_deleted = 0
+    </select>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.FreightRegionMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.entity.FreightRegion" id="freightRegionMap">
+        <result property="id" column="id"/>
+        <result property="fid" column="fid"/>
+        <result property="valuationWay" column="valuation_way"/>
+        <result property="type" column="type"/>
+        <result property="isLarge" column="is_large"/>
+        <result property="region" column="region"/>
+        <result property="regionInfo" column="region_info"/>
+        <result property="firstNumber" column="first_number"/>
+        <result property="firstPrice" column="first_price"/>
+        <result property="renewNumber" column="renew_number"/>
+        <result property="renewPrice" column="renew_price"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    id,fid,valuation_way,type,is_large,region,region_info, first_number,first_price,renew_number,renew_price,gmt_create,gmt_modified    </sql>
+    <delete id="deleteByFid">
+        DELETE FROM zc_freight_region WHERE fid = #{fid}
+    </delete>
+
+    <select id="queryList" resultType="FreightRegion">
+        SELECT * FROM zc_freight_region zfr
+        WHERE fid = #{id}
+    </select>
+
+
+</mapper>

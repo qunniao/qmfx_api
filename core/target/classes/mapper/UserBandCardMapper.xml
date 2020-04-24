@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.UserBandCardMapper">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    id,user_id,card_type,band_code,card_number,card_name,real_name,
+    tixian,is_deleted,gmt_create,gmt_modified   </sql>
+
+    <select id="queryInfoByCardNumber" resultType="com.zhancheng.core.entity.UserBandCard">
+        SELECT
+            *
+         FROM
+            zc_user_bandcard
+        WHERE
+            user_id = #{userId}
+        AND
+            card_number =  #{cardNumber}
+    </select>
+
+
+</mapper>

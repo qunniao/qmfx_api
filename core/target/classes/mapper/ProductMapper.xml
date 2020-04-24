@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.ProductMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.entity.Product" id="productMap">
+        <result property="pid" column="pid"/>
+        <result property="typeId" column="type_id"/>
+        <result property="productNumber" column="product_number"/>
+        <result property="title" column="title"/>
+        <result property="cover" column="cover"/>
+        <result property="video" column="video"/>
+        <result property="productIntro" column="product_intro"/>
+        <result property="marketPrice" column="market_price"/>
+        <result property="price" column="price"/>
+        <result property="stockPrice" column="stock_price"/>
+        <result property="sales" column="sales"/>
+        <result property="flowSales" column="flow_sales"/>
+        <result property="realSales" column="real_sales"/>
+        <result property="totalStock" column="total_stock"/>
+        <result property="detailMobile" column="detail_mobile"/>
+        <result property="isRecommend" column="is_recommend"/>
+        <result property="status" column="status"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="retailFreightId" column="retail_freight_id"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    pid,type_id,product_number,title,cover,video,product_intro,market_price,price,
+    stock_price,sales,flow_sales,real_sales,total_stock,detail_mobile,is_recommend,
+    status,is_deleted,gmt_create,gmt_modified,retail_freight_id </sql>
+
+    <select id="queryList" resultType="com.zhancheng.core.vo.ProductListVO">
+        SELECT
+            zp.pid,
+            zp.price,
+            zp.cover,
+            zp.title,
+            zp.sales,
+            zp.product_number,
+            zp.total_stock,
+            zp.gmt_create
+        FROM
+            zc_product zp
+        <where>
+            is_deleted = 0
+            <if test="query.search != null and query.search != ''">
+                AND zp.title LIKE CONCAT('%', #{query.search}, '%')
+            </if>
+            <if test="query.typeId != null">
+                AND zp.type_id = #{query.typeId}
+            </if>
+        </where>
+        ORDER BY
+        <choose>
+            <when test='query.sortType == "1"'>
+                zp.price ASC
+            </when>
+            <when test='query.sortType == "2"'>
+                zp.price DESC
+            </when>
+            <when test='query.sortType == "3"'>
+                zp.sales ASC
+            </when>
+            <when test='query.sortType == "4"'>
+                zp.sales DESC
+            </when>
+            <otherwise>
+                gmt_create DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="queryInfo" resultType="com.zhancheng.core.vo.ProductVO">
+        SELECT
+            zp.pid,
+            zp.price,
+            zp.type_id,
+            zp.cover,
+            zp.title,
+            zp.product_intro,
+            zp.product_number,
+            zp.video,
+            zp.sales,
+            zp.detail_mobile,
+            zp.total_stock,
+            zp.retail_freight_id
+        FROM
+            zc_product zp
+        WHERE zp.pid = #{pid} AND zp.is_deleted = 0
+    </select>
+
+    <select id="queryRecommend" resultType="com.zhancheng.core.vo.ProductListVO">
+        SELECT
+        zp.pid,
+        zp.price,
+        zp.cover,
+        zp.title,
+        zp.sales,
+        zp.gmt_create
+        FROM
+        zc_product zp
+        WHERE is_deleted = 0
+        ORDER BY zp.sales DESC
+        LIMIT 3
+    </select>
+
+    <select id="countFreightNum" resultType="java.lang.Integer">
+        SELECT count(pid) FROM zc_product zp
+        WHERE zp.is_deleted = 0 AND zp.retail_freight_id = #{fid}
+    </select>
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.OrderRefundMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.vo.OrderRefundVO" id="orderRefundMap">
+        <result property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="orderProductId" column="order_product_id"/>
+        <result property="refundType" column="refund_type"/>
+        <result property="productState" column="product_state"/>
+        <result property="refundWhy" column="refund_why"/>
+        <result property="refundMoney" column="refund_money"/>
+        <result property="note" column="note"/>
+        <result property="pic1" column="pic1"/>
+        <result property="pic2" column="pic2"/>
+        <result property="pic3" column="pic3"/>
+        <result property="refundWay" column="refund_way"/>
+        <result property="refundDeliveryNumber" column="refund_delivery_number"/>
+        <result property="refundDeliveryCompany" column="refund_delivery_company"/>
+        <result property="refundState" column="refund_state"/>
+        <result property="orderState" column="order_state"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="nickname" column="nickname"/>
+
+        <association property="orderProductVO" javaType="com.zhancheng.core.vo.OrderProductVO">
+            <result property="pid" column="product_id"/>
+            <result property="title" column="title"/>
+            <result property="cover" column="cover"/>
+            <result property="productNum" column="product_num"/>
+            <result property="productPrice" column="product_price"/>
+        </association>
+
+        <association property="orderVO" javaType="com.zhancheng.core.vo.OrderVO">
+            <result property="userId" column="user_id"/>
+            <result property="orderNumber" column="order_number"/>
+            <result property="freight" column="freight"/>
+            <result property="discount" column="discount"/>
+            <result property="totalPrice" column="total_price"/>
+            <result property="payMoney" column="pay_money"/>
+        </association>
+    </resultMap>
+
+   
+    <select id="queryPage" resultMap="orderRefundMap">
+        SELECT
+            t.*,
+            o.id as order_id,o.user_id,o.order_number,o.freight,o.total_price,o.pay_money,
+            op.order_id,op.product_id,op.product_num,op.product_price,
+            p.title,p.cover,
+            u.nickname
+        FROM
+            zc_order_refund t left join zc_order o on t.order_id = o.id
+            left join zc_order_product op on t.order_product_id = op.id
+            left join zc_product p on op.product_id = p.pid
+            left join zc_user u on o.user_id = u.id
+        WHERE
+        t.is_deleted = 0
+    </select>
+
+    <select id="queryList" resultType="com.zhancheng.core.vo.OrderLogisticVO">
+        SELECT
+            t.*
+        FROM
+            zc_order_logistic t
+        WHERE t.order_id = #{orderId}
+        AND
+        t.is_deleted = 0
+    </select>
+
+    <select id="queryList2" resultType="com.zhancheng.core.vo.OrderLogisticVO">
+        SELECT
+            t.id,t.order_id,t.order_product_id
+        FROM
+            zc_order_logistic t
+        WHERE t.order_id = #{orderId}
+        AND
+        t.is_deleted = 0
+        ORDER BY t.id DESC
+    </select>
+
+    <select id="queryInfo" resultType="com.zhancheng.core.vo.OrderLogisticVO">
+        SELECT
+            t.*
+        FROM
+            zc_order_logistic t
+        WHERE t.id = #{id}
+        AND
+        t.is_deleted = 0
+    </select>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhancheng.core.dao.WalletHistoryMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhancheng.core.entity.WalletHistory" id="walletHistoryMap">
+        <result property="id" column="id"/>
+        <result property="tradeNo" column="trade_no"/>
+        <result property="userId" column="user_id"/>
+        <result property="tradeType" column="trade_type"/>
+        <result property="amount" column="amount"/>
+        <result property="balance" column="balance"/>
+        <result property="tradeDesc" column="trade_desc"/>
+        <result property="gmtCreate" column="gmt_create"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+    id,trade_no,user_id,trade_type,amount,balance,trade_desc,gmt_create   </sql>
+
+    <select id="queryPage" resultType="com.zhancheng.core.vo.WalletHistoryListVO">
+        SELECT
+            wh.*,
+            u.nickname
+        FROM
+            zc_wallet_history wh
+            LEFT JOIN zc_user u
+            ON wh.user_id = u.id
+        <where>
+            <if test="query.userId != null">
+                AND wh.user_id = #{query.userId}
+            </if>
+            <if test="query.inOut != null">
+                AND wh.in_out = #{query.inOut}
+            </if>
+        </where>
+        ORDER BY wh.gmt_create DESC
+    </select>
+
+
+
+</mapper>
